@@ -1,10 +1,22 @@
-# Lobelia Silhouettes
+# Lobelia leaf morphometrics
 
 Automating leaf-trait extraction from digitized herbarium specimens of _Lobelia_ sect. _Lobelia_ — 23 eastern North American wildflowers.
 
 Undergraduate research at **Kent State University**, Department of Biological Sciences, advised by **Dr. Andrea Case**. Proposal dated December 2021; work ran through 2022 with a final data pull in February 2024. It sat inside NSF award [**DEB-2015606**](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2015606) — _BEE: Ecological and evolutionary processes affecting the co-existence of close relatives_ (Case, Kent State; collaborative with Lynda Delph at Indiana and Nico Cellinese at Florida).
 
-**Write-up with figures and results:** https://musharna.github.io/projects/LobeliaSilhouettes/
+> **Which project is this?** Two related but distinct pieces of work came out of the Case lab
+> _Lobelia_ project, and they are easy to confuse because both reduce a pressed plant to an outline:
+>
+> - **this repo — automating leaf measurement:** acquiring specimen sheets at aggregator scale,
+>   segmenting individual leaves, and extracting morphometric traits from them.
+> - **the digital reconstruction of _Lobelia_ silhouettes:** whole-plant silhouettes drawn from
+>   restored herbarium specimens, credited in Godden et al. 2025. **Not in this repo** — none of its
+>   source material survived in the backup these files were recovered from.
+>
+> This repo was first published as `lobelia-silhouettes`, a name that conflated the two. The old
+> URL redirects here.
+
+**Write-up with figures and results:** https://musharna.github.io/projects/LobeliaLeafMeasurement/
 
 ## The problem
 
