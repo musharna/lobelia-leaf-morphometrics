@@ -49,6 +49,29 @@ The rosette problem was never fully solved. Delineating individual leaves in a f
 - **Notebook outputs are stripped.** They were tens of thousands of download log lines.
 - One plaintext credential and one account name present in the original working notes have been removed; those lines are marked in [`docs/working-notes.md`](docs/working-notes.md). Everything else is verbatim.
 
+## Shape-space analysis (added 2026)
+
+`analysis/` ordinates leaf outline across the clade from the recovered segmentation masks: **486 leaves from 88 specimens across 8 species**, each outline resampled to 128 pseudo-landmarks, aligned, scaled to unit centroid size, and reduced by PCA.
+
+| result                                | value     |
+| ------------------------------------- | --------- |
+| PC1 share of shape variance           | 48%       |
+| corr(PC1, measured width:length)      | **0.978** |
+| between-species share of PC1 (eta²)   | 0.493     |
+| between-species share of PC2 (eta²)   | 0.006     |
+| LDA accuracy, **grouped by specimen** | **0.372** |
+| permuted-label null                   | 0.166     |
+| LDA accuracy, naive split             | 0.430     |
+
+Outline alone runs at roughly twice chance — real, and modest. PC2 is real variation, but _within_ plants rather than between species.
+
+Two details are load-bearing rather than incidental:
+
+- **Cross-validation is grouped by specimen.** Ten leaves off one plant are not ten independent observations; the naive split scores ~6 points higher for free.
+- **Alignment was the hard part.** A first version produced a strongly **bimodal** PC1 holding 82.5% of variance — the signature of inconsistent orientation, not biology. `find_contours` traverses some outlines clockwise and others counter-clockwise, which reverses the landmark sequence and splits the sample in two under PCA. Pinning contour winding, the 180° rotation and the start landmark dropped PC1 to 48% and made it unimodal.
+
+The masks themselves are **not** in this repo — they are lab material. The scripts expect them in a local `all_masks/` directory.
+
 ## Provenance
 
 This is completed undergraduate work, published as a record rather than as a maintained project. The code is not packaged for reuse and the models are not included. These files were recovered in August 2026 from a laptop backup — the notebooks are as they were written, renamed for legibility and with outputs stripped.
