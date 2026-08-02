@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+# Specimen imagery is deliberately not tracked - see README
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
