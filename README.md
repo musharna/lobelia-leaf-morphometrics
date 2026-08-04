@@ -100,7 +100,41 @@ The rosette problem was never fully solved. Delineating individual leaves in a f
 | permuted-label null                   | 0.166     |
 | LDA accuracy, naive split             | 0.430     |
 
-Outline alone runs at roughly twice chance — real, and modest. PC2 is real variation, but _within_ plants rather than between species.
+Outline alone runs at roughly twice chance — real, and modest.
+
+**What PC2 is, measured rather than asserted.** PC2 carries 26% of shape variance and
+essentially no species signal (eta² 0.006). Partitioning it by _specimen_ instead gives
+eta² **0.211** — so about 79% of PC2 is leaf-to-leaf variation _within a single plant_,
+not between plants and emphatically not between species.
+
+### Damage contaminates PC1, and the result survives it anyway
+
+Thresholded herbarium masks include torn and punctured laminae. Solidity (outline
+convexity) is the only damage proxy available, and it tracks the axis the whole result
+rests on:
+
+| check                                     | value                 |
+| ----------------------------------------- | --------------------- |
+| solidity vs PC1 (Spearman)                | **+0.360**, p 2.5e-16 |
+| same, mean _within_ species               | **+0.308**            |
+| eta² of solidity by species               | 0.150                 |
+| eta² PC1 by species, raw → damage-removed | 0.493 → **0.434**     |
+| LDA grouped, raw → damage-removed         | 0.372 → **0.360**     |
+| **LDA on solidity ALONE, no shape**       | **0.195**             |
+| majority-class baseline                   | 0.191                 |
+
+Damaged leaves read as _narrower_, which is what losing lamina should do. The contamination
+is real and holds within species, so it is not species-level covariation. But residualising
+every PC on solidity costs only 0.012 accuracy, and **damage with no shape information at all
+classifies at 0.195 against a 0.191 baseline** — it cannot carry the species signal by itself.
+The published result stands.
+
+One coincidence worth stating: _L. glandulosa_ is both the **most damaged** species (mean
+solidity 0.851) and the PC1 outlier driving the strongest agreement with the 2024 analysis.
+
+**Attrition.** Of **1,206 connected components** across the 104 masks, 490 were usable
+(40.6%); 186 were too small, 238 too damaged, 292 both. Of components large enough to measure
+at all, **32.7% were rejected as too damaged to use.**
 
 Two details are load-bearing rather than incidental:
 
@@ -114,6 +148,7 @@ source sheets carry all-rights-reserved notices regardless of the licence field
 on the aggregator record. Point the scripts at your own copy:
 
 ```bash
+pip install -r requirements.txt        # scikit-learn is pinned: LDA scores move between versions
 export LOBELIA_DATA=/path/to/data      # must contain masks/ ; 01 writes outlines.npz here
 export LOBELIA_FIGDIR=/path/to/figures # defaults to ./figures
 python analysis/01_extract_outlines.py     # masks/      -> outlines.npz
