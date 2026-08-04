@@ -43,8 +43,11 @@ def resample(c, k):
     return np.column_stack([np.interp(t, s, c[:, 0]), np.interp(t, s, c[:, 1])])
 
 
-rows, labels, vouchers = [], [], []
+rows, labels, vouchers, solidities = [], [], [], []
 n_masks = n_comp = 0
+# Attrition, split by WHY a component was dropped. "too small" and "too damaged"
+# are different facts about herbarium material and worth reporting separately.
+rej_small = rej_rough = rej_both = 0
 for f in sorted(glob.glob(os.path.join(SRC, "*.tif"))):
     n_masks += 1
     sp = (
@@ -59,7 +62,11 @@ for f in sorted(glob.glob(os.path.join(SRC, "*.tif"))):
         fg = ~fg
     for p in measure.regionprops(measure.label(fg)):
         n_comp += 1
-        if p.area < AREA_FLOOR or p.solidity < SOLIDITY_MIN:
+        small, rough = p.area < AREA_FLOOR, p.solidity < SOLIDITY_MIN
+        if small or rough:
+            rej_both += small and rough
+            rej_small += small and not rough
+            rej_rough += rough and not small
             continue
         cs = measure.find_contours(np.pad(p.image.astype(float), 2), 0.5)
         if not cs:
@@ -90,9 +97,27 @@ for f in sorted(glob.glob(os.path.join(SRC, "*.tif"))):
         rows.append(pts.ravel())
         labels.append(sp)
         vouchers.append(os.path.basename(f))
+        # Keep solidity. It is the only damage proxy we have, and 02 needs it to test
+        # whether the surviving damage biases the shape axes it is about to measure.
+        solidities.append(p.solidity)
 
 X = np.array(rows)
-np.savez(OUT, X=X, labels=np.array(labels), vouchers=np.array(vouchers))
+np.savez(
+    OUT,
+    X=X,
+    labels=np.array(labels),
+    vouchers=np.array(vouchers),
+    solidity=np.array(solidities),
+)
 print(f"masks={n_masks} components={n_comp} leaves_kept={len(rows)}")
+measurable = len(rows) + rej_rough
+print(
+    f"attrition: kept {len(rows)}/{n_comp} ({len(rows) / n_comp:.1%}) | "
+    f"dropped too-small {rej_small}, too-damaged {rej_rough}, both {rej_both}"
+)
+print(
+    f"  of components big enough to measure, {rej_rough}/{measurable} "
+    f"({rej_rough / measurable:.1%}) were too damaged to use"
+)
 for sp, n in collections.Counter(labels).most_common():
     print(f"  {sp:20s} {n}")
