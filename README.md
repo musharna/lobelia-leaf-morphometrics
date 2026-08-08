@@ -43,8 +43,8 @@ Traits from Herbarium Vouchers_.
 ### The aggregator-scale ambition, which was never finished
 
 A parallel goal was to skip the dismembering — segment measurable leaves straight off an intact
-sheet and run the whole clade at aggregator scale. That is what the GBIF acquisition and the
-2,906 → 2,733 image corpus were assembled for:
+sheet and run the whole clade at aggregator scale. That is what the GBIF acquisition and its
+4,085 downloaded sheets were assembled for:
 
 | stage                        | what it does                                                                                                        | where                                                                                                                                                                   |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -61,11 +61,18 @@ the February 2024 talk lists the CVAT-aided segmentation pipeline under _Future 
 
 Annotation was to be done in CVAT and exported COCO-style, with sheets rescaled 5100 × 3500 → 1200 × 800, model inputs at 256 × 256, and a 60 / 20 / 20 split.
 
-## Corpus
+## The acquisition ledger
+
+This section is about the downloaded sheets, which produced **no measurement**. The
+measured corpus is the dismembered vouchers — 104 recovered masks, 490 usable leaf
+outlines across 90 vouchers — counted under
+[Shape-space analysis](#shape-space-analysis-added-2026) below.
 
 `data/gbif_acquisition_ledger.xlsx` is the per-species acquisition ledger — occurrence records screened, duplicates purged (with reasoning), download failures, and final image counts, per species, retrieved 2022-01-14.
 
-Across the **20 of 23** species tabs complete on both ends: **2,906 occurrence records screened → 2,733 specimen images retained.** Three tabs are unfinished, so the true corpus is larger, not smaller.
+**22 of 23** species tabs record a final tally, totalling **4,085 specimen images retained**. The **3,645 occurrence records screened** covers only the 21 species whose tab records an intake figure, so the two totals span different sets of species; `batsonii` was never tallied at all.
+
+> Read the ledger **by label, not by row.** Two tabs (`inflata`, `siphilitica`) use a 7-row header block where the other twenty-one use a 9-row one, so `final images` sits at row 7 in those and row 9 in the rest. Transcribing at a fixed row reads `?` and silently drops both — which is exactly what happened, and they are the second and third most-collected species in the clade (723 and 629). The resulting undercount, 2,733 across 20 species, stood in this README and on the project page until 2026-08-07.
 
 Coverage is extremely long-tailed — 811 retained sheets for _L. cardinalis_ against a single usable one for _L. apalachicolensis_. Any model trained on it inherits that skew.
 
