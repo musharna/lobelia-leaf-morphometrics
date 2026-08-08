@@ -19,9 +19,20 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fallback_util import inject
 from _paths import fig as fig_path  # noqa: E402
 
-# From the project's own GBIFDataaquisitionMASTER.xlsx ledger (20 complete species tabs).
+# From the project's own GBIFDataaquisitionMASTER.xlsx ledger, read by LABEL and not
+# by row number. Two tabs (inflata, siphilitica) use a 7-row header block where the
+# other twenty-one use a 9-row one, so `final images` sits at row 7 in those and row 9
+# in the rest. An earlier version of this list was transcribed at a fixed row, read
+# `?`, and dropped both -- the second and third most-collected species in the clade --
+# undercounting the acquisition by a third (2,733 of 4,085) and omitting them from the
+# figure entirely. Read the labels, not the positions.
+#
+# A `None` screened count means that tab records no intake figure. It is not zero, and
+# it is why the screened total covers 21 species while the retained total covers 22.
 ROWS = [
     ("cardinalis", 899, 811),
+    ("inflata", 739, 723),
+    ("siphilitica", None, 629),
     ("spicata", 484, 468),
     ("kalmii", 334, 315),
     ("glandulosa", 230, 230),
@@ -49,13 +60,16 @@ INK = "#7a7a7a"
 GRID = "rgba(122,122,122,0.30)"
 
 species = [f"<i>L. {r[0]}</i>" for r in ROWS]
-screened = [r[1] for r in ROWS]
 retained = [r[2] for r in ROWS]
-kept_pct = [100.0 * r[2] / r[1] for r in ROWS]
+# Formatted here rather than in the hovertemplate: a missing intake figure has to read
+# as "not recorded", and a format spec cannot render None as anything but a crash or a
+# misleading zero.
+screened = [f"{r[1]:,}" if r[1] is not None else "not recorded" for r in ROWS]
+kept_pct = [f"{100.0 * r[2] / r[1]:.0f}%" if r[1] is not None else "—" for r in ROWS]
 
 fig = go.Figure()
 
-# Leader lines are a reading aid across 20 rows, drawn in the recessive grid colour
+# Leader lines are a reading aid across 22 rows, drawn in the recessive grid colour
 # so they never read as magnitude.
 for sp, ret in zip(species, retained):
     fig.add_shape(
@@ -81,14 +95,14 @@ fig.add_trace(
             "<b>%{y}</b><br>"
             "retained images <b>%{x}</b><br>"
             "occurrence records screened %{customdata[0]}<br>"
-            "kept %{customdata[1]:.0f}%<extra></extra>"
+            "kept %{customdata[1]}<extra></extra>"
         ),
         name="",
     )
 )
 
 fig.update_layout(
-    height=560,
+    height=600,
     margin=dict(l=8, r=30, t=12, b=54),
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
@@ -124,15 +138,26 @@ fig.write_html(
     config={"displayModeBar": False, "responsive": True},
 )
 # Without this the reader gets a blank 580px box when cdn.plot.ly is unreachable.
-# It carries the numbers because the 20-row table that used to back this chart up
-# was removed as a duplicate -- there is no longer a fallback elsewhere on the page.
+# It carries the numbers because the table that used to back this chart up was removed
+# as a duplicate -- there is no longer a fallback elsewhere on the page.
+#
+# DERIVED FROM ROWS, never written out by hand. The previous version hard-coded
+# "20 species, 2,906 -> 2,733" here as a second copy of the same figures. When ROWS was
+# corrected to 22 species the chart updated and this sentence did not, so the page
+# shipped with its own no-JS fallback contradicting the prose beside it -- invisible to
+# anyone with JavaScript on, which is everyone who checks.
+n_screened = sum(r[1] for r in ROWS if r[1] is not None)
+n_retained = sum(r[2] for r in ROWS)
+n_with_intake = sum(1 for r in ROWS if r[1] is not None)
 inject(
     out,
     "Specimen images retained per species, after de-duplication: "
-    "<b>811</b> for <i>L. cardinalis</i> down to a single usable sheet for "
+    f"<b>{max(retained)}</b> for <i>L. cardinalis</i> down to a single usable sheet for "
     "<i>L. apalachicolensis</i> &mdash; three orders of magnitude across "
-    "<b>20</b> species, from <b>2,906</b> occurrence records screened to "
-    "<b>2,733</b> images retained. This chart needs JavaScript and the Plotly library.",
+    f"<b>{len(ROWS)}</b> species, totalling <b>{n_retained:,}</b> images retained. "
+    f"The <b>{n_screened:,}</b> occurrence records screened cover the {n_with_intake} "
+    "species whose tab records an intake figure, so the two totals span different sets. "
+    "This chart needs JavaScript and the Plotly library.",
 )
 
 print("wrote", out, os.path.getsize(out), "bytes")
