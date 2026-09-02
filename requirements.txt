@@ -4,7 +4,7 @@
 # figures quoted in the README (0.372 grouped, 0.430 naive) were produced under 1.7.
 # The rest are floors, not pins.
 numpy>=2.3
-scipy>=1.15
+scipy>=1.18.1
 scikit-image>=0.25
 scikit-learn==1.7.*
 Pillow>=11.0
