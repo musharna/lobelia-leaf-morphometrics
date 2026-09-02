@@ -19,7 +19,7 @@ In R:
 #Load package
 library(LeafArea)
 #Measure 
-run.ij(set.directory = "C:/Users/a2b32/Desktop/4",
+run.ij(set.directory = "C:/Users/<user>/Desktop/4",
        distance.pixel = 85, 
        known.distance = 1, 
        trim.pixel = 0)
