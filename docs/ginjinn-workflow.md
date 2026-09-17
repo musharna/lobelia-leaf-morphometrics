@@ -19,7 +19,7 @@ ginjinn utils filter_cat \
 	-f leaf
 
 ##note leaf here is keeping jsut leaf
-##split into train validation and test 
+##split into train validation and test
 
 ginjinn split -I leucanthemum_filtered -o leucanthemum_filtered_split -d instance-segmentation -t 0.2 -v 0.2
 

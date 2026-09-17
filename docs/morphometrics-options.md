@@ -8,7 +8,7 @@ Morphometrics thoughts-
 will need to rotate leaf masks about major axis
 
 :morphidas
-outdated? not fully fleshed 
+outdated? not fully fleshed
 
 :traitex
 to measure length width area?

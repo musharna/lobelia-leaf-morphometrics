@@ -16,8 +16,8 @@ import sys
 import plotly.graph_objects as go
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _paths import fig as fig_path
 from fallback_util import inject
-from _paths import fig as fig_path  # noqa: E402
 
 # From the project's own GBIFDataaquisitionMASTER.xlsx ledger, read by LABEL and not
 # by row number. Two tabs (inflata, siphilitica) use a 7-row header block where the
@@ -78,7 +78,7 @@ for sp, ret in zip(species, retained):
         x1=ret,
         y0=sp,
         y1=sp,
-        line=dict(color=GRID, width=1),
+        line={"color": GRID, "width": 1},
         layer="below",
     )
 
@@ -87,9 +87,11 @@ fig.add_trace(
         x=retained,
         y=species,
         mode="markers",
-        marker=dict(
-            color=DOT, size=11, line=dict(color="rgba(252,252,251,0.85)", width=1.5)
-        ),
+        marker={
+            "color": DOT,
+            "size": 11,
+            "line": {"color": "rgba(252,252,251,0.85)", "width": 1.5},
+        },
         customdata=list(zip(screened, kept_pct)),
         hovertemplate=(
             "<b>%{y}</b><br>"
@@ -103,31 +105,33 @@ fig.add_trace(
 
 fig.update_layout(
     height=600,
-    margin=dict(l=8, r=30, t=12, b=54),
+    margin={"l": 8, "r": 30, "t": 12, "b": 54},
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color=INK, size=13),
+    font={"color": INK, "size": 13},
     showlegend=False,  # single series - the axis title names it
-    xaxis=dict(
-        type="log",
-        range=[-0.09, 3.05],
-        title=dict(text="specimen images retained (log scale)", font=dict(size=12)),
-        gridcolor=GRID,
-        zeroline=False,
-        showline=False,
-        tickvals=[1, 3, 10, 30, 100, 300, 1000],
-        ticktext=["1", "3", "10", "30", "100", "300", "1000"],
-        tickfont=dict(color=INK),
-    ),
-    yaxis=dict(
-        showgrid=False,
-        zeroline=False,
-        showline=False,
-        tickfont=dict(color=INK, size=12),
-    ),
-    hoverlabel=dict(
-        bgcolor=DOT, font=dict(color="#ffffff", size=12), bordercolor="rgba(0,0,0,0)"
-    ),
+    xaxis={
+        "type": "log",
+        "range": [-0.09, 3.05],
+        "title": {"text": "specimen images retained (log scale)", "font": {"size": 12}},
+        "gridcolor": GRID,
+        "zeroline": False,
+        "showline": False,
+        "tickvals": [1, 3, 10, 30, 100, 300, 1000],
+        "ticktext": ["1", "3", "10", "30", "100", "300", "1000"],
+        "tickfont": {"color": INK},
+    },
+    yaxis={
+        "showgrid": False,
+        "zeroline": False,
+        "showline": False,
+        "tickfont": {"color": INK, "size": 12},
+    },
+    hoverlabel={
+        "bgcolor": DOT,
+        "font": {"color": "#ffffff", "size": 12},
+        "bordercolor": "rgba(0,0,0,0)",
+    },
 )
 
 out = fig_path("lobelia_species_counts.html")

@@ -16,8 +16,8 @@ Unannotatable images need removed
 Lots of basal leaves
 -georgiana:
 Unannotatable images need removed
--gattingeri: 
-DONE! Check for more images? 
+-gattingeri:
+DONE! Check for more images?
 -canbyi:
 Unannotatable images need removed
 Classes need to be fixed

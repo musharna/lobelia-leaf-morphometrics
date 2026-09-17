@@ -10,14 +10,15 @@ colours ever has to be told apart.
 import os
 import sys
 
-import numpy as np
 import matplotlib
+import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _paths import data, fig as fig_path  # noqa: E402
+from _paths import data
+from _paths import fig as fig_path
 
 d = np.load(data("outlines.npz"), allow_pickle=True)
 X, y, v = d["X"], d["labels"], d["vouchers"]

@@ -1,9 +1,9 @@
 """Index a headerless/truncated ZIP by walking local file headers, and extract small docs in the same pass."""
 
-import struct
-import sys
 import os
 import signal
+import struct
+import sys
 import zlib
 
 signal.signal(
@@ -40,44 +40,42 @@ def wanted(name, usz):
     return ("documents" + SEP + "research" + SEP) in low or "lobelia" in low
 
 
-f = open(path, "rb")
 off = 0
 scanned = 0
 saved = 0
-idx = open(index_out, "w", encoding="utf-8")
-while True:
-    f.seek(off)
-    hdr = f.read(30)
-    if len(hdr) < 30 or hdr[:4] != b"PK\x03\x04":
-        break
-    ver, flags, meth, mt, md, crc, csz, usz, nlen, elen = struct.unpack(
-        "<HHHHHIIIHH", hdr[4:30]
-    )
-    name = f.read(nlen).decode("utf-8", "replace")
-    data_off = off + 30 + nlen + elen
-    scanned += 1
-    idx.write("%s\t%d\t%d\t%d\t%d\n" % (name, data_off, csz, usz, meth))
+with open(path, "rb") as f, open(index_out, "w", encoding="utf-8") as idx:
+    while True:
+        f.seek(off)
+        hdr = f.read(30)
+        if len(hdr) < 30 or hdr[:4] != b"PK\x03\x04":
+            break
+        ver, flags, meth, mt, md, crc, csz, usz, nlen, elen = struct.unpack(
+            "<HHHHHIIIHH", hdr[4:30]
+        )
+        name = f.read(nlen).decode("utf-8", "replace")
+        data_off = off + 30 + nlen + elen
+        scanned += 1
+        idx.write(f"{name}\t{data_off}\t{csz}\t{usz}\t{meth}\n")
 
-    if wanted(name, usz):
-        f.seek(data_off)
-        raw = f.read(csz if csz else usz)
-        try:
-            blob = raw if meth == 0 else zlib.decompress(raw, -15)
-        except Exception as e:
-            sys.stderr.write("DECOMP_FAIL %s %s\n" % (name, e))
-            off = data_off + csz
-            continue
-        rel = name.rstrip(SEP).replace(SEP, "__").replace("/", "_")
-        with open(os.path.join(outdir, rel), "wb") as o:
-            o.write(blob)
-        saved += 1
-        print("SAVED", rel, usz, flush=True)
+        if wanted(name, usz):
+            f.seek(data_off)
+            raw = f.read(csz if csz else usz)
+            try:
+                blob = raw if meth == 0 else zlib.decompress(raw, -15)
+            except Exception as e:
+                sys.stderr.write(f"DECOMP_FAIL {name} {e}\n")
+                off = data_off + csz
+                continue
+            rel = name.rstrip(SEP).replace(SEP, "__").replace("/", "_")
+            with open(os.path.join(outdir, rel), "wb") as o:
+                o.write(blob)
+            saved += 1
+            print("SAVED", rel, usz, flush=True)
 
-    if scanned % 25000 == 0:
-        sys.stderr.write("scanned=%d off=%d saved=%d\n" % (scanned, off, saved))
-        idx.flush()
+        if scanned % 25000 == 0:
+            sys.stderr.write(f"scanned={scanned} off={off} saved={saved}\n")
+            idx.flush()
 
-    off = data_off + csz
+        off = data_off + csz
 
-idx.close()
-sys.stderr.write("DONE scanned=%d saved=%d final_off=%d\n" % (scanned, saved, off))
+sys.stderr.write(f"DONE scanned={scanned} saved={saved} final_off={off}\n")

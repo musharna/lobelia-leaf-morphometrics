@@ -1,0 +1,7 @@
+# Guardrails baseline (2026-09-17). Everything ruff flags is fixed except:
+[lint]
+# The extraction/download scripts and notebooks log the failure and continue
+# by design (one corrupt zip member must not abort a 40k-file pass). There is
+# no test suite here to verify a narrower exception set against, so the blind
+# catch stays and is declared rather than hidden with 15 inline noqa lines.
+ignore = ["BLE001"]

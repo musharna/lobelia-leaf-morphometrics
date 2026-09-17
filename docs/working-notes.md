@@ -19,19 +19,19 @@ species name
 fertile/non-fertile (presence of reproductive structures)
 phenophase
 flower absence/presence
-flower bud/flowers/immature fruit/mature fruit 
+flower bud/flowers/immature fruit/mature fruit
 leaves-
 	presence/absence
-	area 
+	area
 	structure/form
 	margin
 	veination
 	arrangement
 	# of leaves
 	broken leaves? (broken leaf area)
-	
-rescaled from 
-5100 x 3500 to 
+
+rescaled from
+5100 x 3500 to
 1200 x 800
 
 cvat
@@ -86,14 +86,14 @@ at least 500 specimens
 no same species specimens in both training and testing
 (avoid bias- will lower accuracy but more realistic)
 (most specimens from our collection will need to be
-put in the training and test composed of online 
-resources (some collectors are on test set)) 
+put in the training and test composed of online
+resources (some collectors are on test set))
 
-ImageNet- standard for pre-training (use weights of a 
+ImageNet- standard for pre-training (use weights of a
 trained model)
 Herbarium1k pretraining?
 
-image rights are seperate from occurence rights 
+image rights are seperate from occurence rights
 
 filter for only recent entries to ensure quality?
 
@@ -159,7 +159,7 @@ can bounding boxes be rotated? do they need annotated beyond the original mask?
 
 tell ginjinnn to update link on example applications
 
-creation of synthetic data, use of filters/flips/monochrom/etc? 
+creation of synthetic data, use of filters/flips/monochrom/etc?
 pretrain on ginjinn leucanthemum?
 
 remove hash (uncomment) to use augments

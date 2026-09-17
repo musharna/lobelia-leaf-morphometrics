@@ -15,14 +15,15 @@ corroborating, and so cannot fail informatively as a test of the 2024 result.
 import os
 import sys
 
-import numpy as np
 import matplotlib
+import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _paths import data, fig as fig_path  # noqa: E402
+from _paths import data
+from _paths import fig as fig_path
 
 d = np.load(data("outlines.npz"), allow_pickle=True)
 X, y = d["X"], d["labels"]
@@ -85,7 +86,13 @@ for (sp, mx, my, inpaper), (_, _, ly) in zip(cents, placed):
         xy=(mx, my),
         xytext=(lx, ly),
         zorder=2,
-        arrowprops=dict(arrowstyle="-", color="#b9b9b9", lw=0.9, shrinkA=2, shrinkB=6),
+        arrowprops={
+            "arrowstyle": "-",
+            "color": "#b9b9b9",
+            "lw": 0.9,
+            "shrinkA": 2,
+            "shrinkB": 6,
+        },
     )
     ax.text(
         lx + 0.006,
