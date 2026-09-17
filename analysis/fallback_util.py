@@ -8,6 +8,7 @@ this shipped the fallback text alongside a working chart, caught by testing the 
 case as well as the CDN-blocked one. Plotly stamps `js-plotly-plot` onto the container
 on successful render (confirmed in-browser), so that class is the hide signal.
 """
+
 import re
 
 CSS = (
@@ -16,15 +17,20 @@ CSS = (
     "max-width:46rem}.js-plotly-plot>.plotly-fallback{display:none!important}</style>"
 )
 
+
 def inject(path, text):
-    s = open(path, encoding="utf-8").read()
+    with open(path, encoding="utf-8") as fh:
+        s = fh.read()
     m = re.search(r'(<div id="[0-9a-f-]+" class="plotly-graph-div"[^>]*>)(</div>)', s)
     if not m:
-        raise SystemExit(f"FAIL: graph div not found in {path} -- fallback NOT injected")
+        raise SystemExit(
+            f"FAIL: graph div not found in {path} -- fallback NOT injected"
+        )
     if "</head>" not in s:
         raise SystemExit(f"FAIL: no <head> in {path} -- stylesheet NOT injected")
     s = s.replace("</head>", CSS + "</head>", 1)
     m = re.search(r'(<div id="[0-9a-f-]+" class="plotly-graph-div"[^>]*>)(</div>)', s)
     fb = '<p class="plotly-fallback">' + text + "</p>"
-    s = s[: m.end(1)] + fb + s[m.end(1):]
-    open(path, "w", encoding="utf-8").write(s)
+    s = s[: m.end(1)] + fb + s[m.end(1) :]
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(s)

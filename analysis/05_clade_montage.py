@@ -10,14 +10,16 @@ A species whose mask cannot supply such a component is EXCLUDED and reported.
 """
 
 import os
-import sys
 import signal
+import sys
+
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from skimage import measure
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _paths import data, fig as fig_path  # noqa: E402
+from _paths import data
+from _paths import fig as fig_path
 
 signal.signal(
     signal.SIGALRM, lambda *_: (sys.stderr.write("walltime guard\n"), sys.exit(2))
@@ -92,7 +94,7 @@ for fn, (sp, vouch) in sorted(SPECIES.items(), key=lambda kv: kv[1][0]):
         continue
     comp = p.image
     h, w = comp.shape
-    new_w = max(8, int(round(w * (LEAF_H / h))))
+    new_w = max(8, round(w * (LEAF_H / h)))
     leaf = Image.fromarray(np.where(comp, 0, 255).astype(np.uint8)).resize(
         (new_w, LEAF_H), Image.LANCZOS
     )

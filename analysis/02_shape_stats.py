@@ -15,7 +15,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.model_selection import GroupKFold, StratifiedKFold, cross_val_score
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _paths import data  # noqa: E402
+from _paths import data
 
 d = np.load(data("outlines.npz"), allow_pickle=True)
 X, y, v = d["X"], d["labels"], d["vouchers"]

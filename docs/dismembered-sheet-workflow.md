@@ -12,16 +12,16 @@ Note site code and plant id #
 Open Image in ImageJ and rotate images to standardize leaf orientation (leaf tip always facing upward)
 Note # of total leaves
 Measure scale length (standard of 1cm), base to first leaf (look for green or green yellow arrows), base to first flower (magenta arrow), stem thickness at base, stem thickness at first flower
-Select leaves which would be appropriate for leaf analysis (Does leaf still look like a leaf? Is it excessively folded?) 
+Select leaves which would be appropriate for leaf analysis (Does leaf still look like a leaf? Is it excessively folded?)
 Crop original image into smaller images of only selected leaves (Stored in OneDrive)
 Use leaf crops in R and other morphometric programs
 In R:
 #Load package
 library(LeafArea)
-#Measure 
+#Measure
 run.ij(set.directory = "C:/Users/<user>/Desktop/4",
-       distance.pixel = 85, 
-       known.distance = 1, 
+       distance.pixel = 85,
+       known.distance = 1,
        trim.pixel = 0)
 #General use format:
 #set.directory = "C:/ location (USE SHORT PATH)

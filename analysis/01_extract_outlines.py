@@ -9,17 +9,18 @@ Three things are now pinned explicitly:
   3. the start landmark.
 """
 
-import os
-import sys
-import glob
-import signal
 import collections
+import glob
+import os
+import signal
+import sys
+
 import numpy as np
 from PIL import Image
 from skimage import measure
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _paths import DATA, data  # noqa: E402
+from _paths import DATA, data
 
 signal.signal(signal.SIGALRM, lambda *_: (sys.stderr.write("guard\n"), sys.exit(2)))
 signal.alarm(1800)
